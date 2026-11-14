@@ -7,8 +7,10 @@ import {
   TextInput,
   TouchableOpacity,
   StyleSheet,
-  Alert
+  Alert,
+  Image,
 } from 'react-native';
+import * as ImagePicker from 'expo-image-picker';
 
 export default function AddItemScreen({ goBack, onAddItem }) {
 
@@ -16,6 +18,20 @@ export default function AddItemScreen({ goBack, onAddItem }) {
   const [description, setDescription] = useState('');
   const [location, setLocation] = useState('');
   const [type, setType] = useState('lost');
+  const [image, setImage] = useState(null); 
+  
+  const pickImage = async () => {
+    const result = await ImagePicker.launchImageLibraryAsync({
+        mediaTypes: ['images'],
+        allowsEditing: true,
+        quality: 1,
+        });
+
+    if (!result.canceled) {
+        setImage(result.assets[0].uri);
+        }
+    };
+
 
   const handleSubmit = () => {
 
@@ -66,6 +82,22 @@ export default function AddItemScreen({ goBack, onAddItem }) {
         value={location}
         onChangeText={setLocation}
       />
+
+      <TouchableOpacity
+    style={styles.imageButton}
+    onPress={pickImage}
+>
+    <Text style={styles.imageButtonText}>
+        Choose Item Photo
+    </Text>
+</TouchableOpacity>
+
+{image && (
+    <Image
+        source={{ uri: image }}
+        style={styles.imagePreview}
+    />
+)}
 
       <Text style={styles.label}>Item Type</Text>
 
@@ -162,6 +194,25 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     fontSize: 16,
   },
+  imageButton: {
+    backgroundColor: '#E5E7EB',
+    padding: 12,
+    borderRadius: 8,
+    marginBottom: 15,
+},
+
+imageButtonText: {
+    textAlign: 'center',
+    fontSize: 16,
+    color: '#333333',
+},
+
+imagePreview: {
+    width: 150,
+    height: 150,
+    borderRadius: 8,
+    marginBottom: 20,
+},
 
   submitButton: {
     backgroundColor: '#15803D',
