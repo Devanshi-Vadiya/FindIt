@@ -9,6 +9,7 @@ import {
 } from 'react-native';
 import { useState } from 'react';
 import LostItemsScreen from './LostItemsScreen';
+import FoundItemsScreen from './FoundItemsScreen';
 
 export default function App() {
 
@@ -21,6 +22,13 @@ export default function App() {
       />
     );
   }
+  if (screen === 'found') {
+  return (
+    <FoundItemsScreen
+      goBack={() => setScreen('home')}
+    />
+  );
+}
 
   return (
     <View style={styles.container}>
@@ -44,7 +52,7 @@ export default function App() {
 
       <TouchableOpacity
         style={styles.foundButton}
-        onPress={() => Alert.alert("Found Items")}
+        onPress={() => setScreen('found')}
       >
         <Text style={styles.buttonText}>Found Items</Text>
       </TouchableOpacity>
