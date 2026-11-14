@@ -7,7 +7,7 @@ import {
   TouchableOpacity,
   Alert
 } from 'react-native';
-import { useState } from 'react';
+import { useState , useEffect} from 'react';
 import LostItemsScreen from './LostItemsScreen';
 import FoundItemsScreen from './FoundItemsScreen';
 import AddItemScreen from './AddItemScreen';
@@ -15,50 +15,18 @@ import AddItemScreen from './AddItemScreen';
 
 export default function App() {
 
- const [items, setItems] = useState([
-  {
-    id: '1',
-    name: 'Black Wallet',
-    location: 'College Library',
-    description: '',
-    type: 'lost'
-  },
-  {
-    id: '2',
-    name: 'Water Bottle',
-    location: 'Classroom 204',
-    description: '',
-    type: 'lost'
-  },
-  {
-    id: '3',
-    name: 'Blue Backpack',
-    location: 'College Canteen',
-    description: '',
-    type: 'lost'
-  },
-  {
-    id: '4',
-    name: 'Black Headphones',
-    location: 'College Library',
-    description: '',
-    type: 'found'
-  },
-  {
-    id: '5',
-    name: 'Student ID Card',
-    location: 'College Canteen',
-    description: '',
-    type: 'found'
-  },
-  {
-    id: '6',
-    name: 'Umbrella',
-    location: 'Classroom 102',
-    description: '',
-    type: 'found'
-  }
-]); 
+const [items, setItems] = useState([]);
+
+useEffect(() => {
+    fetch('http://192.168.1.16:5000/api/items')
+        .then(response => response.json())
+        .then(data => {
+            setItems(data);
+        })
+        .catch(error => {
+            console.log('Error fetching items:', error);
+        });
+}, []); 
 
  const [screen, setScreen] = useState('home');
 
@@ -84,10 +52,33 @@ if (screen === 'add') {
   return (
     <AddItemScreen
       goBack={() => setScreen('home')}
-      onAddItem={(newItem) => {
-        setItems([...items, newItem]);
-        setScreen(newItem.type);
-      }}
+      onAddItem={async (newItem) => {
+    try {
+        const response = await fetch(
+            'http://192.168.1.16:5000/api/items',
+            {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(newItem)
+            }
+        );
+
+        const savedItem = await response.json();
+
+        if (!response.ok) {
+            throw new Error(savedItem.message);
+        }
+
+        setItems([...items, savedItem]);
+        setScreen(savedItem.type);
+
+    } catch (error) {
+        Alert.alert('Error', 'Could not save item. Please try again.');
+        console.log(error);
+    }
+}}
     />
   );
 }
