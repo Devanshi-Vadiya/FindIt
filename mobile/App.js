@@ -7,8 +7,20 @@ import {
   TouchableOpacity,
   Alert
 } from 'react-native';
+import { useState } from 'react';
+import LostItemsScreen from './LostItemsScreen';
 
 export default function App() {
+
+ const [screen, setScreen] = useState('home');
+
+  if (screen === 'lost') {
+   return (
+    <LostItemsScreen
+      goBack={() => setScreen('home')}
+      />
+    );
+  }
 
   return (
     <View style={styles.container}>
@@ -25,7 +37,7 @@ export default function App() {
 
       <TouchableOpacity
         style={styles.lostButton}
-        onPress={() => Alert.alert("Lost Items")}
+        onPress={() => setScreen('lost')}
       >
         <Text style={styles.buttonText}>Lost Items</Text>
       </TouchableOpacity>
