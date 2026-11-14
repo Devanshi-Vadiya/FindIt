@@ -6,7 +6,7 @@ const app = express();
 app.use(express.json());
 
 app.get("/", (req, res) => {
-    res.send("FindIt Backend is Running!");
+    res.send("FindIt  is Running!");
 });
 
 app.listen(5000, () => {
