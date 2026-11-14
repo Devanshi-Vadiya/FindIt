@@ -7,25 +7,7 @@ import {
   TouchableOpacity
 } from 'react-native';
 
-export default function LostItemsScreen({ goBack }) {
-
-  const items = [
-    {
-      id: '1',
-      name: 'Black Wallet',
-      location: 'College Library'
-    },
-    {
-      id: '2',
-      name: 'Water Bottle',
-      location: 'Classroom 204'
-    },
-    {
-      id: '3',
-      name: 'Blue Backpack',
-      location: 'College Canteen'
-    }
-  ];
+export default function LostItemsScreen({ goBack,items }) {
 
   return (
     <View style={styles.container}>

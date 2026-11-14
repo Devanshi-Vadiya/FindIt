@@ -10,22 +10,84 @@ import {
 import { useState } from 'react';
 import LostItemsScreen from './LostItemsScreen';
 import FoundItemsScreen from './FoundItemsScreen';
+import AddItemScreen from './AddItemScreen';
+
 
 export default function App() {
 
+ const [items, setItems] = useState([
+  {
+    id: '1',
+    name: 'Black Wallet',
+    location: 'College Library',
+    description: '',
+    type: 'lost'
+  },
+  {
+    id: '2',
+    name: 'Water Bottle',
+    location: 'Classroom 204',
+    description: '',
+    type: 'lost'
+  },
+  {
+    id: '3',
+    name: 'Blue Backpack',
+    location: 'College Canteen',
+    description: '',
+    type: 'lost'
+  },
+  {
+    id: '4',
+    name: 'Black Headphones',
+    location: 'College Library',
+    description: '',
+    type: 'found'
+  },
+  {
+    id: '5',
+    name: 'Student ID Card',
+    location: 'College Canteen',
+    description: '',
+    type: 'found'
+  },
+  {
+    id: '6',
+    name: 'Umbrella',
+    location: 'Classroom 102',
+    description: '',
+    type: 'found'
+  }
+]); 
+
  const [screen, setScreen] = useState('home');
 
-  if (screen === 'lost') {
-   return (
+ if (screen === 'lost') {
+  return (
     <LostItemsScreen
+      items={items.filter(item => item.type === 'lost')}
       goBack={() => setScreen('home')}
-      />
-    );
-  }
-  if (screen === 'found') {
+    />
+  );
+}
+
+if (screen === 'found') {
   return (
     <FoundItemsScreen
+      items={items.filter(item => item.type === 'found')}
       goBack={() => setScreen('home')}
+    />
+  );
+}
+
+if (screen === 'add') {
+  return (
+    <AddItemScreen
+      goBack={() => setScreen('home')}
+      onAddItem={(newItem) => {
+        setItems([...items, newItem]);
+        setScreen(newItem.type);
+      }}
     />
   );
 }
@@ -55,6 +117,13 @@ export default function App() {
         onPress={() => setScreen('found')}
       >
         <Text style={styles.buttonText}>Found Items</Text>
+      </TouchableOpacity>
+
+      <TouchableOpacity
+        style={styles.addButton}
+        onPress={() => setScreen('add')}
+      >
+        <Text style={styles.buttonText}>Add Item</Text>
       </TouchableOpacity>
 
       <Text style={styles.footer}>
@@ -104,6 +173,13 @@ const styles = StyleSheet.create({
     backgroundColor: '#15803D',
     padding: 15,
     borderRadius: 8,
+    marginBottom: 15,
+  },
+
+  addButton: {
+     backgroundColor: '#535520',
+     padding: 15,
+     borderRadius: 8,
   },
 
   buttonText: {

@@ -7,25 +7,7 @@ import {
   TouchableOpacity
 } from 'react-native';
 
-export default function FoundItemsScreen({ goBack }) {
-
-  const items = [
-    {
-      id: '1',
-      name: 'Black Headphones',
-      location: 'College Library'
-    },
-    {
-      id: '2',
-      name: 'Student ID Card',
-      location: 'College Canteen'
-    },
-    {
-      id: '3',
-      name: 'Umbrella',
-      location: 'Classroom 102'
-    }
-  ];
+export default function FoundItemsScreen({ goBack , items}) {
 
   return (
     <View style={styles.container}>
