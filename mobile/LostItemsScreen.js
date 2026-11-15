@@ -6,7 +6,9 @@ import {
   StyleSheet,
   TouchableOpacity,
   Image,
-  Alert
+  Alert,
+  Share,
+
 } from 'react-native';
 
 export default function LostItemsScreen({ goBack, items, onDeleteItem }) {
@@ -67,6 +69,17 @@ export default function LostItemsScreen({ goBack, items, onDeleteItem }) {
             <Text>☐ Mark / Delete</Text>
           </TouchableOpacity>
 
+          <TouchableOpacity
+            onPress={() => {
+              Share.share({
+                message: `Lost Item: ${item.name}
+                Location: ${item.location}
+                Description: ${item.description}`
+              });
+            }}
+          >
+            <Text>Share Item</Text>
+          </TouchableOpacity>
 
         </View>
       ))}

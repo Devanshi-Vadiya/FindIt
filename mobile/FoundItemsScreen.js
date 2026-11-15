@@ -7,6 +7,7 @@ import {
   TouchableOpacity,
   Image,
   Alert,
+  Share
 } from 'react-native';
 
 export default function FoundItemsScreen({ goBack, items, onDeleteItem }) {
@@ -60,6 +61,18 @@ export default function FoundItemsScreen({ goBack, items, onDeleteItem }) {
             }}
           >
             <Text>☐ Mark / Delete</Text>
+          </TouchableOpacity>
+
+          <TouchableOpacity
+            onPress={() => {
+              Share.share({
+                message: `Found Item: ${item.name}
+                Location: ${item.location}
+                Description: ${item.description}`
+              });
+            }}
+          >
+            <Text>Share Item</Text>
           </TouchableOpacity>
 
         </View>
