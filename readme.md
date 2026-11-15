@@ -48,63 +48,6 @@ FindIt/
 │   └── package.json
 │
 └── .gitignore
-```
-
-## Getting Started
-
-### 1. Clone the Repository
-
-```bash
-git clone <your-repository-url>
-cd FindIt
-```
-
-### 2. Set Up the Backend
-
-```bash
-cd backend
-npm install
-```
-
-Create a `.env` file inside the `backend` folder:
-
-```env
-PORT=5000
-MONGO_URI=your_mongodb_connection_string
-```
-
-Start the backend:
-
-```bash
-node server.js
-```
-
-The backend will run on port `5000`.
-
-### 3. Set Up the Mobile App
-
-Open another terminal:
-
-```bash
-cd mobile
-npm install
-```
-
-Update the API address in the mobile app to use your computer's local IP address:
-
-```js
-http://YOUR_LOCAL_IP:5000/api/items
-```
-
-Make sure your phone and computer are connected to the same Wi-Fi network when testing locally.
-
-Start Expo:
-
-```bash
-npx expo start
-```
-
-Scan the QR code using Expo Go to open the app.
 
 ## API Endpoints
 
@@ -122,7 +65,7 @@ Scan the QR code using Expo Go to open the app.
 - Add item status tracking.
 
 ## Author
-
+Devanshi Vadiya
 Developed as a college project to make campus lost-and-found management easier.
 
 **FindIt - Helping lost things find their way back.**
