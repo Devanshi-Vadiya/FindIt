@@ -1,16 +1,18 @@
 
-import React from 'react';
-import {
+import React, { useState } from 'react'; import {
   View,
   Text,
   StyleSheet,
   TouchableOpacity,
   Image,
   Alert,
-  Share
+  Share,
+  TextInput
 } from 'react-native';
 
 export default function FoundItemsScreen({ goBack, items, onDeleteItem }) {
+
+  const [searchText, setSearchText] = useState('');
 
   return (
     <View style={styles.container}>
@@ -21,62 +23,73 @@ export default function FoundItemsScreen({ goBack, items, onDeleteItem }) {
 
       <Text style={styles.heading}>Found Items</Text>
 
-      {items.map((item) => (
-        <View style={styles.itemBox} key={item._id}>
-          {item.imageUrl !== '' && (
-            <Image
-              source={{ uri: item.imageUrl }}
-              style={styles.itemImage}
-            />
-          )}
-          <Text style={styles.itemName}>
-            {item.name}
-          </Text>
+      <TextInput
+        style={styles.searchInput}
+        placeholder="Search found items..."
+        value={searchText}
+        onChangeText={setSearchText}
+      />
 
-          <Text style={styles.location}>
-            Location: {item.location}
-          </Text>
+      {items
+        .filter(item =>
+          item.name.toLowerCase().includes(searchText.toLowerCase())
+        )
+        .map((item) => (
+          <View style={styles.itemBox} key={item._id}>
+            {item.imageUrl !== '' && (
+              <Image
+                source={{ uri: item.imageUrl }}
+                style={styles.itemImage}
+              />
+            )}
+            <Text style={styles.itemName}>
+              {item.name}
+            </Text>
 
-          <TouchableOpacity
-            onPress={() => {
-              Alert.alert(
-                'Found Item Options',
-                'What would you like to do?',
-                [
-                  {
-                    text: 'Cancel',
-                    style: 'cancel'
-                  },
-                  {
-                    text: 'Delete',
-                    style: 'destructive',
-                    onPress: () => onDeleteItem(item._id)
-                  },
-                  {
-                    text: 'Found by Owner',
-                    onPress: () => onDeleteItem(item._id)
-                  }
-                ]
-              );
-            }}
-          >
-            <Text>☐ Mark / Delete</Text>
-          </TouchableOpacity>
+            <Text style={styles.location}>
+              Location: {item.location}
+            </Text>
 
-          <TouchableOpacity
-            onPress={() => {
-              Share.share({
-                message: `Found Item: ${item.name}
+            <TouchableOpacity
+              onPress={() => {
+                Alert.alert(
+                  'Found Item Options',
+                  'What would you like to do?',
+                  [
+                    {
+                      text: 'Cancel',
+                      style: 'cancel'
+                    },
+                    {
+                      text: 'Delete',
+                      style: 'destructive',
+                      onPress: () => onDeleteItem(item._id)
+                    },
+                    {
+                      text: 'Found by Owner',
+                      onPress: () => onDeleteItem(item._id)
+                    }
+                  ]
+                );
+              }}
+            >
+              <Text>☐ Mark / Delete</Text>
+            </TouchableOpacity>
+
+            <TouchableOpacity
+              onPress={() => {
+                Share.share({
+                  message: `Found Item: ${item.name}
                 Location: ${item.location}
                 Description: ${item.description}`
-              });
-            }}
-          >
-            <Text>Share Item</Text>
-          </TouchableOpacity>
+                });
+              }}
+            >
+              <Text>Share Item</Text>
+            </TouchableOpacity>
 
-        </View>
-      ))}
+          </View>
+        ))}
 
     </View>
   );
@@ -126,6 +139,14 @@ const styles = StyleSheet.create({
     height: 150,
     borderRadius: 8,
     marginBottom: 10,
+  },
+  searchInput: {
+    borderWidth: 1,
+    borderColor: '#CCCCCC',
+    borderRadius: 8,
+    padding: 12,
+    marginBottom: 20,
+    fontSize: 16,
   },
 
 });
