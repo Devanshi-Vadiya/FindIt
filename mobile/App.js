@@ -7,7 +7,7 @@ import {
   TouchableOpacity,
   Alert
 } from 'react-native';
-import { useState , useEffect} from 'react';
+import { useState, useEffect } from 'react';
 import LostItemsScreen from './LostItemsScreen';
 import FoundItemsScreen from './FoundItemsScreen';
 import AddItemScreen from './AddItemScreen';
@@ -15,73 +15,101 @@ import AddItemScreen from './AddItemScreen';
 
 export default function App() {
 
-const [items, setItems] = useState([]);
+  const [items, setItems] = useState([]);
 
-useEffect(() => {
+  useEffect(() => {
     fetch('http://192.168.1.16:5000/api/items')
-        .then(response => response.json())
-        .then(data => {
-            setItems(data);
-        })
-        .catch(error => {
-            console.log('Error fetching items:', error);
-        });
-}, []); 
+      .then(response => response.json())
+      .then(data => {
+        setItems(data);
+      })
+      .catch(error => {
+        console.log('Error fetching items:', error);
+      });
+  }, []);
 
- const [screen, setScreen] = useState('home');
+  const [screen, setScreen] = useState('home');
 
- if (screen === 'lost') {
-  return (
-    <LostItemsScreen
-      items={items.filter(item => item.type === 'lost')}
-      goBack={() => setScreen('home')}
-    />
-  );
-}
-
-if (screen === 'found') {
-  return (
-    <FoundItemsScreen
-      items={items.filter(item => item.type === 'found')}
-      goBack={() => setScreen('home')}
-    />
-  );
-}
-
-if (screen === 'add') {
-  return (
-    <AddItemScreen
-      goBack={() => setScreen('home')}
-      onAddItem={async (newItem) => {
+  const deleteItem = async (id) => {
     try {
-        const response = await fetch(
-            'http://192.168.1.16:5000/api/items',
-            {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify(newItem)
-            }
-        );
-
-        const savedItem = await response.json();
-
-        if (!response.ok) {
-            throw new Error(savedItem.message);
+      const response = await fetch(
+        `http://192.168.1.16:5000/api/items/${id}`,
+        {
+          method: 'DELETE'
         }
+      );
 
-        setItems([...items, savedItem]);
-        setScreen(savedItem.type);
+      const data = await response.json();
+
+      if (!response.ok) {
+        throw new Error(data.message);
+      }
+
+      setItems(items.filter(item => item._id !== id));
 
     } catch (error) {
-        Alert.alert('Error', 'Could not save item. Please try again.');
-        console.log(error);
+      Alert.alert('Error', 'Could not delete the item.');
+      console.log(error);
     }
-}}
-    />
-  );
-}
+  };
+
+  
+  if (screen === 'lost') {
+    return (
+      <LostItemsScreen
+        items={items.filter(item => item.type === 'lost')}
+        goBack={() => setScreen('home')}
+        onDeleteItem={deleteItem}
+      />
+    );
+  }
+
+  if (screen === 'found') {
+    return (
+      <FoundItemsScreen
+        items={items.filter(item => item.type === 'found')}
+        goBack={() => setScreen('home')}
+        onDeleteItem={deleteItem}
+      />
+    );
+  }
+
+  if (screen === 'add') {
+    return (
+      <AddItemScreen
+        goBack={() => setScreen('home')}
+        onAddItem={async (newItem) => {
+          try {
+            const response = await fetch(
+              'http://192.168.1.16:5000/api/items',
+              {
+                method: 'POST',
+                headers: {
+                  'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(newItem)
+              }
+            );
+
+            const savedItem = await response.json();
+
+            if (!response.ok) {
+              throw new Error(savedItem.message);
+            }
+
+            setItems([...items, savedItem]);
+            setScreen(savedItem.type);
+
+          } catch (error) {
+            Alert.alert('Error', 'Could not save item. Please try again.');
+            console.log(error);
+          }
+        }}
+      />
+    );
+  }
+
+  
 
   return (
     <View style={styles.container}>
@@ -123,6 +151,7 @@ if (screen === 'add') {
 
     </View>
   );
+
 }
 
 const styles = StyleSheet.create({
@@ -168,9 +197,9 @@ const styles = StyleSheet.create({
   },
 
   addButton: {
-     backgroundColor: '#535520',
-     padding: 15,
-     borderRadius: 8,
+    backgroundColor: '#535520',
+    padding: 15,
+    borderRadius: 8,
   },
 
   buttonText: {

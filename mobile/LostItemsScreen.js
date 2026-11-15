@@ -5,10 +5,11 @@ import {
   Text,
   StyleSheet,
   TouchableOpacity,
-  Image
+  Image,
+  Alert
 } from 'react-native';
 
-export default function LostItemsScreen({ goBack,items }) {
+export default function LostItemsScreen({ goBack, items, onDeleteItem }) {
 
   return (
     <View style={styles.container}>
@@ -22,11 +23,11 @@ export default function LostItemsScreen({ goBack,items }) {
       {items.map((item) => (
         <View style={styles.itemBox} key={item._id}>
           {item.imageUrl !== '' && (
-    <Image
-        source={{ uri: item.imageUrl }}
-        style={styles.itemImage}
-    />
-)}
+            <Image
+              source={{ uri: item.imageUrl }}
+              style={styles.itemImage}
+            />
+          )}
           <Text style={styles.itemName}>
             {item.name}
           </Text>
@@ -34,6 +35,38 @@ export default function LostItemsScreen({ goBack,items }) {
           <Text style={styles.location}>
             Location: {item.location}
           </Text>
+
+          <TouchableOpacity
+            onPress={() => {
+              Alert.alert(
+                'Lost Item Options',
+                'What would you like to do?',
+                [
+                  {
+                    text: 'Cancel',
+                    style: 'cancel'
+                  },
+                  {
+                    text: 'Delete',
+                    style: 'destructive',
+                    onPress: () => {
+                      onDeleteItem(item._id);
+                    }
+                  },
+                  {
+                    text: 'Mark As Found',
+                    style: 'destructive',
+                    onPress: () => {
+                      onDeleteItem(item._id);
+                    }
+                  },
+                ]
+              );
+            }}
+          >
+            <Text>☐ Mark / Delete</Text>
+          </TouchableOpacity>
+
 
         </View>
       ))}
@@ -86,6 +119,6 @@ const styles = StyleSheet.create({
     height: 150,
     borderRadius: 8,
     marginBottom: 10,
-},
+  },
 
 });
