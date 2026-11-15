@@ -4,7 +4,8 @@ import {
   View,
   Text,
   StyleSheet,
-  TouchableOpacity
+  TouchableOpacity,
+  Image
 } from 'react-native';
 
 export default function FoundItemsScreen({ goBack , items}) {
@@ -19,8 +20,13 @@ export default function FoundItemsScreen({ goBack , items}) {
       <Text style={styles.heading}>Found Items</Text>
 
       {items.map((item) => (
-        <View style={styles.itemBox} key={item.id}>
-
+        <View style={styles.itemBox} key={item._id}>
+          {item.imageUrl !== '' && (
+    <Image
+        source={{ uri: item.imageUrl }}
+        style={styles.itemImage}
+    />
+)}
           <Text style={styles.itemName}>
             {item.name}
           </Text>
@@ -75,5 +81,11 @@ const styles = StyleSheet.create({
     color: 'gray',
     marginTop: 8,
   },
+  itemImage: {
+    width: 150,
+    height: 150,
+    borderRadius: 8,
+    marginBottom: 10,
+},
 
 });

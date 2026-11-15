@@ -11,7 +11,7 @@ import {
   Image,
 } from 'react-native';
 import * as ImagePicker from 'expo-image-picker';
-
+import { File } from 'expo-file-system';
 export default function AddItemScreen({ goBack, onAddItem }) {
 
   const [name, setName] = useState('');
@@ -32,25 +32,62 @@ export default function AddItemScreen({ goBack, onAddItem }) {
         }
     };
 
+   const uploadImage = async () => {
+    const formData = new FormData();
 
-  const handleSubmit = () => {
+    const file = new File(image);
 
-    if (name.trim() === '' || location.trim() === '') {
-      Alert.alert('Please enter item name and location');
-      return;
+    formData.append('file', file);
+    formData.append('upload_preset', 'findit_upload');
+
+    const response = await fetch(
+        'https://api.cloudinary.com/v1_1/dagwbyz4e/image/upload',
+        {
+            method: 'POST',
+            body: formData,
+        }
+    );
+
+    const data = await response.json();
+
+    if (!response.ok) {
+        throw new Error(data.error?.message || 'Image upload failed');
     }
 
-    const newItem = {
-      id: Date.now().toString(),
-      name: name,
-      description: description,
-      location: location,
-      type: type
-    };
+    return data.secure_url;
+};
 
-    onAddItem(newItem);
 
-  };
+  const handleSubmit = async () => {
+
+    if (name.trim() === '' || location.trim() === '') {
+        Alert.alert('Please enter item name and location');
+        return;
+    }
+
+    try {
+        let imageUrl = '';
+
+        if (image) {
+            imageUrl = await uploadImage();
+        }
+
+        const newItem = {
+            id: Date.now().toString(),
+            name: name,
+            description: description,
+            location: location,
+            type: type,
+            imageUrl: imageUrl
+        };
+
+        onAddItem(newItem);
+
+    } catch (error) {
+        Alert.alert('Error', 'Could not upload image. Please try again.');
+        console.log(error);
+    }
+};
 
   return (
     <View style={styles.container}>
@@ -67,6 +104,7 @@ export default function AddItemScreen({ goBack, onAddItem }) {
         value={name}
         onChangeText={setName}
       />
+
 
       <TextInput
         style={styles.input}
