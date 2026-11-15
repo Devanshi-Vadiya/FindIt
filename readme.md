@@ -48,6 +48,7 @@ FindIt/
 │   └── package.json
 │
 └── .gitignore
+```
 
 ## API Endpoints
 
