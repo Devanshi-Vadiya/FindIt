@@ -18,7 +18,7 @@ export default function App() {
   const [items, setItems] = useState([]);
 
   useEffect(() => {
-    fetch('http://192.168.1.16:5000/api/items')
+    fetch('https://findit-backend-cbtd.onrender.com/api/items')
       .then(response => response.json())
       .then(data => {
         setItems(data);
@@ -33,7 +33,7 @@ export default function App() {
   const deleteItem = async (id) => {
     try {
       const response = await fetch(
-        `http://192.168.1.16:5000/api/items/${id}`,
+        `https://findit-backend-cbtd.onrender.com/api/items/${id}`,
         {
           method: 'DELETE'
         }
@@ -53,7 +53,7 @@ export default function App() {
     }
   };
 
-  
+
   if (screen === 'lost') {
     return (
       <LostItemsScreen
@@ -81,7 +81,7 @@ export default function App() {
         onAddItem={async (newItem) => {
           try {
             const response = await fetch(
-              'http://192.168.1.16:5000/api/items',
+              'https://findit-backend-cbtd.onrender.com/api/items',
               {
                 method: 'POST',
                 headers: {
@@ -101,15 +101,15 @@ export default function App() {
             setScreen(savedItem.type);
 
           } catch (error) {
-            Alert.alert('Error', 'Could not save item. Please try again.');
-            console.log(error);
+            Alert.alert('Error', error.message);
+            console.log('SAVE ERROR:', error);
           }
         }}
       />
     );
   }
 
-  
+
 
   return (
     <View style={styles.container}>

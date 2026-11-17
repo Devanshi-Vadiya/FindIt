@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 
 import {
@@ -10,29 +9,32 @@ import {
   Alert,
   Image,
 } from 'react-native';
+
 import * as ImagePicker from 'expo-image-picker';
+
 import { File } from 'expo-file-system';
+
 export default function AddItemScreen({ goBack, onAddItem }) {
 
   const [name, setName] = useState('');
   const [description, setDescription] = useState('');
   const [location, setLocation] = useState('');
   const [type, setType] = useState('lost');
-  const [image, setImage] = useState(null); 
-  
+  const [image, setImage] = useState(null);
+
   const pickImage = async () => {
     const result = await ImagePicker.launchImageLibraryAsync({
-        mediaTypes: ['images'],
-        allowsEditing: true,
-        quality: 1,
-        });
+      mediaTypes: ['images'],
+      allowsEditing: true,
+      quality: 1,
+    });
 
     if (!result.canceled) {
-        setImage(result.assets[0].uri);
-        }
-    };
+      setImage(result.assets[0].uri);
+    }
+  };
 
-   const uploadImage = async () => {
+  const uploadImage = async () => {
     const formData = new FormData();
 
     const file = new File(image);
@@ -41,53 +43,53 @@ export default function AddItemScreen({ goBack, onAddItem }) {
     formData.append('upload_preset', 'findit_upload');
 
     const response = await fetch(
-        'https://api.cloudinary.com/v1_1/dagwbyz4e/image/upload',
-        {
-            method: 'POST',
-            body: formData,
-        }
+      'https://api.cloudinary.com/v1_1/dagwbyz4e/image/upload',
+      {
+        method: 'POST',
+        body: formData,
+      }
     );
 
     const data = await response.json();
 
     if (!response.ok) {
-        throw new Error(data.error?.message || 'Image upload failed');
+      throw new Error(data.error?.message || 'Image upload failed');
     }
 
     return data.secure_url;
-};
+  };
 
 
   const handleSubmit = async () => {
 
     if (name.trim() === '' || location.trim() === '') {
-        Alert.alert('Please enter item name and location');
-        return;
+      Alert.alert('Please enter item name and location');
+      return;
     }
 
     try {
-        let imageUrl = '';
+      let imageUrl = '';
 
-        if (image) {
-            imageUrl = await uploadImage();
-        }
+      if (image) {
+        imageUrl = await uploadImage();
+      }
 
-        const newItem = {
-            id: Date.now().toString(),
-            name: name,
-            description: description,
-            location: location,
-            type: type,
-            imageUrl: imageUrl
-        };
+      const newItem = {
+        id: Date.now().toString(),
+        name: name,
+        description: description,
+        location: location,
+        type: type,
+        imageUrl: imageUrl
+      };
 
-        onAddItem(newItem);
+      onAddItem(newItem);
 
     } catch (error) {
-        Alert.alert('Error', 'Could not upload image. Please try again.');
-        console.log(error);
+      Alert.alert('Error', 'Could not upload image. Please try again.');
+      console.log(error);
     }
-};
+  };
 
   return (
     <View style={styles.container}>
@@ -101,6 +103,7 @@ export default function AddItemScreen({ goBack, onAddItem }) {
       <TextInput
         style={styles.input}
         placeholder="Item Name"
+        placeholderTextColor="#777777"
         value={name}
         onChangeText={setName}
       />
@@ -109,6 +112,7 @@ export default function AddItemScreen({ goBack, onAddItem }) {
       <TextInput
         style={styles.input}
         placeholder="Description"
+        placeholderTextColor="#777777"
         value={description}
         onChangeText={setDescription}
         multiline
@@ -117,25 +121,26 @@ export default function AddItemScreen({ goBack, onAddItem }) {
       <TextInput
         style={styles.input}
         placeholder="Location"
+        placeholderTextColor="#777777"
         value={location}
         onChangeText={setLocation}
       />
 
       <TouchableOpacity
-    style={styles.imageButton}
-    onPress={pickImage}
->
-    <Text style={styles.imageButtonText}>
-        Choose Item Photo
-    </Text>
-</TouchableOpacity>
+        style={styles.imageButton}
+        onPress={pickImage}
+      >
+        <Text style={styles.imageButtonText}>
+          Choose Item Photo
+        </Text>
+      </TouchableOpacity>
 
-{image && (
-    <Image
-        source={{ uri: image }}
-        style={styles.imagePreview}
-    />
-)}
+      {image && (
+        <Image
+          source={{ uri: image }}
+          style={styles.imagePreview}
+        />
+      )}
 
       <Text style={styles.label}>Item Type</Text>
 
@@ -202,6 +207,8 @@ const styles = StyleSheet.create({
     padding: 12,
     marginBottom: 15,
     fontSize: 16,
+    color: '#000000',
+    backgroundColor: '#FFFFFF',
   },
 
   label: {
@@ -237,20 +244,20 @@ const styles = StyleSheet.create({
     padding: 12,
     borderRadius: 8,
     marginBottom: 15,
-},
+  },
 
-imageButtonText: {
+  imageButtonText: {
     textAlign: 'center',
     fontSize: 16,
     color: '#333333',
-},
+  },
 
-imagePreview: {
+  imagePreview: {
     width: 150,
     height: 150,
     borderRadius: 8,
     marginBottom: 20,
-},
+  },
 
   submitButton: {
     backgroundColor: '#15803D',
