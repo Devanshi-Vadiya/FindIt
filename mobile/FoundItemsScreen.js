@@ -7,7 +7,8 @@ import React, { useState } from 'react'; import {
   Image,
   Alert,
   Share,
-  TextInput
+  TextInput,
+  ScrollView
 } from 'react-native';
 
 export default function FoundItemsScreen({ goBack, items, onDeleteItem }) {
@@ -29,7 +30,7 @@ export default function FoundItemsScreen({ goBack, items, onDeleteItem }) {
         value={searchText}
         onChangeText={setSearchText}
       />
-
+      <ScrollView style={{ flex: 1 }}>
       {items
         .filter(item =>
           item.name.toLowerCase().includes(searchText.toLowerCase())
@@ -90,6 +91,7 @@ export default function FoundItemsScreen({ goBack, items, onDeleteItem }) {
 
           </View>
         ))}
+        </ScrollView>
 
     </View>
   );

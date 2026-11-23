@@ -9,6 +9,7 @@ import {
   Alert,
   Share,
   TextInput,
+  ScrollView
 
 } from 'react-native';
 
@@ -31,72 +32,73 @@ export default function LostItemsScreen({ goBack, items, onDeleteItem }) {
         value={searchText}
         onChangeText={setSearchText}
       />
+      <ScrollView style={{ flex: 1 }}>
+        {items
+          .filter(item =>
+            item.name.toLowerCase().includes(searchText.toLowerCase())
+          )
+          .map((item) => (
+            <View style={styles.itemBox} key={item._id}>
+              {item.imageUrl !== '' && (
+                <Image
+                  source={{ uri: item.imageUrl }}
+                  style={styles.itemImage}
+                />
+              )}
+              <Text style={styles.itemName}>
+                {item.name}
+              </Text>
 
-      {items
-        .filter(item =>
-          item.name.toLowerCase().includes(searchText.toLowerCase())
-        )
-        .map((item) => (
-          <View style={styles.itemBox} key={item._id}>
-            {item.imageUrl !== '' && (
-              <Image
-                source={{ uri: item.imageUrl }}
-                style={styles.itemImage}
-              />
-            )}
-            <Text style={styles.itemName}>
-              {item.name}
-            </Text>
+              <Text style={styles.location}>
+                Location: {item.location}
+              </Text>
 
-            <Text style={styles.location}>
-              Location: {item.location}
-            </Text>
+              <TouchableOpacity
+                onPress={() => {
+                  Alert.alert(
+                    'Lost Item Options',
+                    'What would you like to do?',
+                    [
+                      {
+                        text: 'Cancel',
+                        style: 'cancel'
+                      },
+                      {
+                        text: 'Delete',
+                        style: 'destructive',
+                        onPress: () => {
+                          onDeleteItem(item._id);
+                        }
+                      },
+                      {
+                        text: 'Mark As Found',
+                        style: 'destructive',
+                        onPress: () => {
+                          onDeleteItem(item._id);
+                        }
+                      },
+                    ]
+                  );
+                }}
+              >
+                <Text>☐ Mark / Delete</Text>
+              </TouchableOpacity>
 
-            <TouchableOpacity
-              onPress={() => {
-                Alert.alert(
-                  'Lost Item Options',
-                  'What would you like to do?',
-                  [
-                    {
-                      text: 'Cancel',
-                      style: 'cancel'
-                    },
-                    {
-                      text: 'Delete',
-                      style: 'destructive',
-                      onPress: () => {
-                        onDeleteItem(item._id);
-                      }
-                    },
-                    {
-                      text: 'Mark As Found',
-                      style: 'destructive',
-                      onPress: () => {
-                        onDeleteItem(item._id);
-                      }
-                    },
-                  ]
-                );
-              }}
-            >
-              <Text>☐ Mark / Delete</Text>
-            </TouchableOpacity>
-
-            <TouchableOpacity
-              onPress={() => {
-                Share.share({
-                  message: `Lost Item: ${item.name}
+              <TouchableOpacity
+                onPress={() => {
+                  Share.share({
+                    message: `Lost Item: ${item.name}
                 Location: ${item.location}
                 Description: ${item.description}`
-                });
-              }}
-            >
-              <Text>Share Item</Text>
-            </TouchableOpacity>
+                  });
+                }}
+              >
+                <Text>Share Item</Text>
+              </TouchableOpacity>
 
-          </View>
-        ))}
+            </View>
+          ))}
+      </ScrollView>
 
     </View>
   );
@@ -154,6 +156,6 @@ const styles = StyleSheet.create({
     padding: 12,
     marginBottom: 20,
     fontSize: 16,
-},
+  },
 
 });
