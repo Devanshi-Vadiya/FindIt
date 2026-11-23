@@ -13,6 +13,7 @@ import {
 import * as ImagePicker from 'expo-image-picker';
 
 import { File } from 'expo-file-system';
+import { fetch } from 'expo/fetch';
 
 export default function AddItemScreen({ goBack, onAddItem }) {
 
@@ -83,7 +84,7 @@ export default function AddItemScreen({ goBack, onAddItem }) {
         imageUrl: imageUrl
       };
 
-      onAddItem(newItem);
+      await onAddItem(newItem);
 
     } catch (error) {
       Alert.alert('Error', 'Could not upload image. Please try again.');

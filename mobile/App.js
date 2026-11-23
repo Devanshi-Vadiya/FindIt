@@ -93,6 +93,7 @@ export default function App() {
 
             const savedItem = await response.json();
 
+
             if (!response.ok) {
               throw new Error(savedItem.message);
             }
